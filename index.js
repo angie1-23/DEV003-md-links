@@ -2,34 +2,33 @@
 const {
   pathValid,
   pathAbs,
-  onlyMd,
   pathInfo,
-  getLinks
+  onlyMd,
+  getLinks,
+  getLinkStatus,
 } = require('./auxFunctions.js')
 
-const mdLinks = (way, options) => {
+const mdLinks = (way, options ={ }) => {
   return new Promise((resolve, reject) => { 
     const pathVerify = pathAbs(way);
-    // console.log(pathValid(pathAbs(way)))
     if(pathValid(pathVerify)){
-      if (pathInfo(pathVerify)){
-        // const readDirec = onlyMd(pathVerify);
-        // const read = fileR(readDirec);
-        // const newMd = onlyMd(readF);
-        // readDirec.forEach(link => {
-        //   fileR(link).then((response) => {
-        //     console.log(response);
-        //   });
-        // });
-        let links = getLinks(pathVerify);
-        console.log(links)
-        resolve(links);
-        // console.log(getLinks(pathVerify));
-        // console.log(getLinks(pathVerify));
-        // console.log(readFile(readDirec))
-      }
+      if(pathInfo(pathVerify)){
+        const files = onlyMd(pathVerify);
+        // console.log(onlyMd(pathVerify))
+        if (files.length!==0){
+          const arrayLinks = getLinks(pathVerify);
+          // console.log(getLinks(pathVerify))
+          if(arrayLinks.length>0){ 
+              if(options.validate===true){
+                getLinkStatus(pathVerify).then((ele) => resolve(ele))
+                  .catch((err) => err);
+                }
+              }else{
+                resolve(arrayLinks)}
+              }
+            }
       else {
-        resolve(pathVerify);
+        resolve(pathValid(pathVerify));
       }
       
     // console.log(pathAbs(way));
@@ -38,7 +37,8 @@ const mdLinks = (way, options) => {
 }
 )};
 
-mdLinks('C:/Users/Estefania/Desktop/mdLinks/DEV003-md-links/direc')
+
+// mdLinks('C:/Users/Estefania/Desktop/mdLinks/DEV003-md-links/direc')
 
 module.exports = {
   mdLinks,
