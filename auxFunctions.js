@@ -10,11 +10,13 @@ const pathValid = (path) => { return fs.existsSync(path) };
 //Verificar si la ruta es absoluta o relativa y se convierte en absoluta
 const pathAbs = (way) => (path.isAbsolute(way) ? (way) : path.resolve(way));
 
+const isFile= (way) =>{return fs.statSync(way).isFile()};
+// console.log(isFile('C:/Users/Estefania/Desktop/mdLinks/DEV003-md-links/prueba.md'))
 // Verificar si la ruta absoluta es un directorio o archivo 
-const pathInfo = (way) => { return fs.statSync(way).isDirectory() };
+const pathInfo = (way) => { return fs.statSync(way).isDirectory()};
 
 // Verificar si la ruta absoluta es un directorio o archivo 
-const pathInfo2 = (way) => fs.statSync(way).isfile();
+
 
 // Extension de un archivo 
 const fileMd = (way) => path.extname(way);
@@ -23,8 +25,10 @@ const fileMd = (way) => path.extname(way);
 
 // Leer un directorio 
 const readAllFiles = (way, arrayOfFiles = []) => {
-	// arrayOfFiles = [];
-	const files = fs.readdirSync(way);
+	if (isFile(way)) {
+		arrayOfFiles.push(way);
+	}else{
+		const files = fs.readdirSync(way);
 	files.forEach(file => {
 		const stat = fs.statSync(`${way}/${file}`)
 		if (stat.isDirectory()) {
@@ -33,11 +37,12 @@ const readAllFiles = (way, arrayOfFiles = []) => {
 			arrayOfFiles.push(`${way}/${file}`)
 		}
 	});
+	}
 	return arrayOfFiles
 };
-// readAllFiles('direc');
+// console.log(readAllFiles('direc'));
 const onlyMd = (way) => { return readAllFiles(way).filter((file => path.extname(file) === '.md')) };
-// onlyMd('direc');
+// console.log(onlyMd('prueba.md'));
 
 //  console.log(onlyMd('direc'));
 
@@ -95,7 +100,6 @@ const fileR = (way) => {
 // }
 // console.log(getLinks("direc"));
 
-
 const getLinks = (way) => {
 	return new Promise ((resolve, reject)=> {
 	let arrayLinks =[];
@@ -129,40 +133,43 @@ const getLinks = (way) => {
 	});
 });
 };
+// getLinks('./direc').then((res)=>console.log(res)).catch((err) => console.log(err));
 
-// console.log(getLinks('direc'));
-// const readMyFile = (answer) => {
-
-// 	return new Promise ((resolve, reject) => {
-// 	  readFile(answer, 'utf8', (err, data) => {
-// 		if (err) reject (err);
-// 	   const expReg =  /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()!@:%_\+.~#?&\/\/=]*)/g;
-// 	  //  const array = [...data.matchAll(expReg)];
-// 	  const links = data.match(expReg);
-// 		resolve(links);
-// 	  });
-// 	})
-
-const getLinkStatus = (way) => {
-  const statusLink = getLinks(way).map((link) => fetch(link.href)
-    .then((response) => ({
-      href: link.href,
-      text: link.text,
-      file: link.file,
-      status: response.status,
-      message: response.status >= 200 && response.status < 400 ? 'Ok' : 'Fail',
-    }))
-    .catch((error) => ({
-      href: link.href,
-      text: link.text,
-      file: link.file,
-      status: 'Failed request',
-      message: error,
-    })));
-  return Promise.all(statusLink);
+const getLinkStatus = (array) => {
+	let statusLink = []; 
+		// console.log(array);
+		statusLink = array.map((link) => fetch(link.href)
+			.then((response) => { 
+				// console.log(response);
+				return {
+				href: link.href,
+				text: link.text,
+				file: link.file,
+				status: response.status,
+				message: response.status >= 200 && response.status < 400 ? 'Ok' : 'Fail',
+			}
+			}).catch((error) => { 
+				console.log(error);
+				return {
+				href: link.href,
+				text: link.text,
+				file: link.file,
+				status:'Fail',
+				message: error.code,
+			}
+			})
+		)
+	return Promise.all(statusLink);
 };
+		// console.log(getLinkStatus())
+		// getLinks('https://curriculum.laboratoria.la/es/topics/css/css/boxmodel-and-display').then(((res) => (getLinkStatus(res).then(((resolve) => console.log(resolve))))));
+		// getLinkStatus('direc').then((res)=> console.log(res)).catch((err)=>err)
+		// console.log(getLinkStatus('direc'));
+	// console.log(getLinkStatus('./direc'));
+// getLinkStatus('direc');
 
-// console.log('')
+
+// getLinks('direc').then(((res) =>(getLinkStatus(res).then(((resolve) => console.log(resolve))))));
 
 module.exports = {
 	pathValid,
@@ -174,4 +181,5 @@ module.exports = {
 	fileR,
 	getLinks,
 	getLinkStatus,
+	isFile,
 };
