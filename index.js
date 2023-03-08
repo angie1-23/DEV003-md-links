@@ -1,49 +1,54 @@
 // Functions  of FS system
-const {
-  pathValid,
-  pathAbs,
-  pathInfo,
-  onlyMd,
-  getLinks,
-  getLinkStatus,
-} = require('./auxFunctions.js')
+  const {
+    pathValid,
+    pathAbs,
+    onlyMd,
+    getLinks,
+    getLinkStatus,
+  } = require('./auxFunctions.js')
 
-const mdLinks = (way, options ={ }) => {
+const mdLinks = (way, options={}) => {
   return new Promise((resolve, reject) => { 
     const pathVerify = pathAbs(way);
     if(pathValid(pathVerify)){
-      if(pathInfo(pathVerify)){
-        const files = onlyMd(pathVerify);
-        // console.log(onlyMd(pathVerify))
-        if (files.length!==0){
-          const arrayLinks = getLinks(pathVerify);
-          // console.log(getLinks(pathVerify))
-          if(arrayLinks.length>0){ 
-              if(options.validate===true){
-                getLinkStatus(pathVerify).then((ele) => resolve(ele))
-                  .catch((err) => err);
-                }
-              }else{
-                resolve(arrayLinks)}
-              }
-            }
-      else {
-        resolve(pathValid(pathVerify));
+      if(onlyMd(pathVerify).length>0){
+         getLinks(pathVerify).then(((res) =>{ 
+        if(res.length>0){
+          if(options === true){
+          // const valid = arrayLinks.then((val)=> getLinkStatus(val) => console.log(val))
+          resolve(getLinkStatus(res))
+          // return;
+        }
+        }else{
+          reject('Any link found');
+        } 
       }
-      
-    // console.log(pathAbs(way));
-  } 
-  else{reject("La ruta no existe");}
-}
-)};
+        ));
+        
+      }else{
+        reject('Markdown (.md) files not found');
+      }
+    }
+    else{
+      reject('THIS PATH DOES NOT EXIST')
+    }
+  });
+};
 
-
-// mdLinks('C:/Users/Estefania/Desktop/mdLinks/DEV003-md-links/direc')
+// getAllLinks('/Users/mafcht/Documents/DEV003-md-links/folderTests/folder2Tests/linkedin.md').then(((res) => (validateLink(res).then(((resolve) => console.log(resolve))))));
+// // mdLinks('C:/Users/Estefania/Desktop/mdLinks/DEV003-md-links/direc')
 
 module.exports = {
   mdLinks,
 };
 
+// if(arrayLinks.length!==0){ 
+  // const resLink= getLinkStatus(pathVerify).then((res)=> console.log(res)).catch((err)=>err)
+  //       //  console.log(resLink)
+  //     }else{
+  //       resolve(arrayLinks)}
+  //   }
+  //   }
     // resolve();
       // Chequear o convertir a una ruta absoluta
       // Probar si esa ruta absoluta es un archivo o directorio 
