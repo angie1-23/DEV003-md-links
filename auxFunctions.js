@@ -129,7 +129,7 @@ const getLinks = (way) => {
 			}
 			
 		})
-		.catch((error) => reject(error));
+		.catch((error) => reject('error: ',`${error}`));
 	});
 });
 };
@@ -170,6 +170,7 @@ const getLinkStatus = (array) => {
 
 
 // getLinks('direc').then(((res) =>(getLinkStatus(res).then(((resolve) => console.log(resolve))))));
+
 
 module.exports = {
 	pathValid,
