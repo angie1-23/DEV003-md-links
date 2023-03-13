@@ -28,5 +28,10 @@
   },
   "devDependencies": {
     "eslint": "^8.35.0"
+  },
+  "author": "Angie Estefania Muñoz",
+  "license": "ISC",
+  "bin": {
+    "md-links-here": "cli.js"
   }
 }

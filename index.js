@@ -14,14 +14,14 @@ const mdLinks = (way, options={}) => {
       if(onlyMd(pathVerify).length>0){
          getLinks(pathVerify).then(((res) =>{ 
         if(res.length>0){
-          if(options === true){
+          if(options.validate === false){
+            resolve(getLinks(pathVerify))
+            // console.log(options)
           // const valid = arrayLinks.then((val)=> getLinkStatus(val) => console.log(val))
-          resolve(getLinkStatus(res))
-          // return;
-        }
+        }else{resolve(getLinkStatus(res)) }
         }else{
           reject('Any link found');
-        } 
+        }   
       }
         ));
         
