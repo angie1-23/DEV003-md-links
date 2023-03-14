@@ -14,8 +14,8 @@ const {
 const fetch = require('node-fetch');
 jest.mock('node-fetch');
 
-//------- Testeo para saber si es valido o no una ruta-----//
-describe('fs.existsSync,retora booleano para saber si la ruta existe o no', () => {
+//------- Valida si la ruta existe o no -----//
+describe('pathValid,retorna booleano para saber si la ruta existe o no', () => {
 	it('Deberia ser una función', () => {
 		expect(typeof pathValid).toBe('function');
 	});
@@ -27,8 +27,8 @@ describe('fs.existsSync,retora booleano para saber si la ruta existe o no', () =
 	});
 });
 
-// Testeo para saber sin son absolutas las rutas 
-describe('path.isAbsolute,retorna la ruta absoluta i si es relativa la convierte', () => {
+//------- Valida si la ruta es absoluta o no -----//
+describe('pathValid,retorna la ruta absoluta i si es relativa la convierte', () => {
 	it('Deberia ser una función', () => {
 		expect(typeof pathValid).toBe('function');
 	});
@@ -40,93 +40,102 @@ describe('path.isAbsolute,retorna la ruta absoluta i si es relativa la convierte
 	});
 });
 
-describe('path.isAbsolute,retorna la ruta absoluta i si es relativa la convierte', () => {
+//------- Valida es archivo o direc -----//
+describe('isFile,retorna un boleano si es directorio o archivo', () => {
 	it('Deberia ser una función', () => {
-		expect(typeof pathValid).toBe('function');
+		expect(typeof isFile).toBe('function');
 	});
-	it('Si la ruta absoluta, debe devolver el path', () => {
+	it('Si la ruta es un archivo, debe devolver true', () => {
 		expect(isFile('pruebaTex.txt')).toBe(true);
 	});
-	it('Si la ruta no es absoluta, deberia covertirla', () => {
+	it('Si la ruta es un directorio, deberia devolver true', () => {
 		expect(pathInfo('C:/Users/Estefania/Desktop/mdLinks/DEV003-md-links/direc')).toBe(true);
 	});
 });
 
 //-------Verifica si lee un directorio-----//
-describe('fs.readdirSync,lee un archivo', () => {
+describe('readAllFiles,lee un directorio', () => {
 	it('Deberia ser una función', () => {
 		expect(typeof readAllFiles).toBe('function');
 	});
 	it('Si es un directorio leer y traer un array de rutas', () => {
 		expect(readAllFiles('C:/Users/Estefania/Desktop/mdLinks/DEV003-md-links/direc')).toEqual(
-			['C:/Users/Estefania/Desktop/mdLinks/DEV003-md-links/direc/hola/prueba3.md', 
-			'C:/Users/Estefania/Desktop/mdLinks/DEV003-md-links/direc/otraprueba.md',
-			'C:/Users/Estefania/Desktop/mdLinks/DEV003-md-links/direc/prueba1.txt' ]);
+			["C:/Users/Estefania/Desktop/mdLinks/DEV003-md-links/direc/direc1/prueba3.md",
+			"C:/Users/Estefania/Desktop/mdLinks/DEV003-md-links/direc/direc1/subDirec/prueba4.md",
+			"C:/Users/Estefania/Desktop/mdLinks/DEV003-md-links/direc/otraprueba.md",
+			"C:/Users/Estefania/Desktop/mdLinks/DEV003-md-links/direc/prueba1.txt",
+			]);
 	});
-	it('Si la ruta no es absoluta, deberia covertirla', () => {
+	it('Si es un archivo, deberia devolver un array con la ruta', () => {
 		expect(readAllFiles('C:/Users/Estefania/Desktop/mdLinks/DEV003-md-links/pruebaTex.txt')).toEqual([
 			'C:/Users/Estefania/Desktop/mdLinks/DEV003-md-links/pruebaTex.txt'
 		]);
 	});
 });
 
-// Testeo de leer archivos 
-
-describe('devuelve una promesa', () => {
-
-	test('the data is format link', () => {
+//-------Verifica si lee un archivo-----// 
+describe('Deberia devolver una promesa leyendo un archivo', () => {
+	test('Lee un archivo', () => {
 		// expect.assertions(1);
 		return fileR('prueba.md').then(data => {
-			expect(data).toBe(' [Funciones — bloques de código reutilizables - MDN](https://developer.mozilla.org/es/docs/Learn/JavaScript/Building_blocks/Functions)');
+			expect(data).toBe(' [Funciones — bloques de código reutilizables - MDN](https://developer.mozilla.org/es/docs/Learn/JavaScript/Building_blocks/ Functions)');
 		});
 	});
-});
-
-describe('devuelve una promesa', () => {
-	test('the fetch fails with an error', () => {
+	test('Error al leer archivo', () => {
 		return fileR('prueb').catch(err =>
 			expect(err).toBe('error: ')
 		);
 	});
 });
 
-//-------Trae lo links-----// getLinks
-
-describe('devuelve una promesa', () => {
-
-	test('the data is format link', () => {
+//-------Devuelve una promesa con array de links-----// getLinks
+describe('Dberia devolver una promesa con un array', () => {
+	test('Array de links con informacion', () => {
 		// expect.assertions(1);
 		return getLinks('C:/Users/Estefania/Desktop/mdLinks/DEV003-md-links/prueba.md').then(data => {
-			expect(data).toEqual([{ 
-				href: 'https://developer.mozilla.org/es/docs/Learn/JavaScript/Building_blocks/Functions',
-    text: 'Funciones — bloques de código reutilizables - MDN',
-    file: 'C:/Users/Estefania/Desktop/mdLinks/DEV003-md-links/prueba.md'
-			}]
+			expect(data).toEqual([[{ 
+				href: 'https://developer.mozilla.org/es/docs/Learn/JavaScript/Building_blocks/ Functions',
+    		text: 'Funciones — bloques de código reutilizables - MDN',
+    		file: 'C:/Users/Estefania/Desktop/mdLinks/DEV003-md-links/prueba.md'
+			}]]
 				);
 		});
 	});
 
 	// describe('devuelve una promesa', () => {
 	// 	test('the fetch fails with an error', () => {
-	// 		return getLinks('C:/Users/Estefania/Desktop/mdLinks/DEV003-md-links/pruebaTex.tx').catch(err =>
-	// 			expect(err).toEqual(['error: '])
+	// 		return getLinks('C:/Users/Estefania/Desktop/mdLinks/DEV003-md-links/anyLinks.md').catch(err =>
+	// 			expect(err).rejects.toBe(['error'])
 	// 		)
 	// 	});
 	// });
 
 });
 
+test('the fetch fails with an error', () => {
+  // expect.assertions(1);
+  return expect(getLinks('C:/Users/Estefania/Desktop/mdLinks/DEV003-md-links/anyLinks.md')).rejects.toMatch(['error']);
+});
+
 //-------Valida los links-----// getLinks
 describe('devuelve una promesa', () => {
 test('the data is format link', () => {
 	// expect.assertions(1);
-	return getLinkStatus('C:/Users/Estefania/Desktop/mdLinks/DEV003-md-links/prueba.md').then(data => {
+	fetch.mockImplementation(() => Promise.resolve({status:404}));
+	return getLinkStatus([{ 
+		href: 'https://developer.mozilla.org/es/docs/Learn/JavaScript/Building_blocks/Functions',
+		text: 'Funciones — bloques de código reutilizables - MDN',
+		file: 'C:/Users/Estefania/Desktop/mdLinks/DEV003-md-links/prueba.md'
+	}]).then(data => {
 		expect(data).toEqual([{ 
 			href: 'https://developer.mozilla.org/es/docs/Learn/JavaScript/Building_blocks/Functions',
-	text: 'Funciones — bloques de código reutilizables - MDN',
-	file: 'C:/Users/Estefania/Desktop/mdLinks/DEV003-md-links/prueba.md'
+			text: 'Funciones — bloques de código reutilizables - MDN',
+			file: 'C:/Users/Estefania/Desktop/mdLinks/DEV003-md-links/prueba.md',
+			status: 404,
+			message:'Fail',
 		}]
 			);
 	});
 });
 });
+

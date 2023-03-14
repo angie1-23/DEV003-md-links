@@ -1,5 +1,5 @@
 {
-  "name": "md-links",
+  "name": "md-links-aemunozp",
   "version": "0.1.0",
   "engines": {
     "node": ">=16.x"
@@ -18,7 +18,7 @@
     "jest": "^29.4.3",
     "marked-links": "^3.1.2"
   },
-  "description": "## Índice",
+  "description": "## Herramienta de línea de comandos (CLI)",
   "main": "index.js",
   "directories": {
     "test": "test"
@@ -33,5 +33,14 @@
   "license": "ISC",
   "bin": {
     "md-links-here": "cli.js"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/angie1-23/DEV003-md-links.git"
+  },
+  "keywords": [],
+  "bugs": {
+    "url": "https://github.com/angie1-23/DEV003-md-links/issues"
+  },
+  "homepage": "https://github.com/angie1-23/DEV003-md-links#readme"
 }
