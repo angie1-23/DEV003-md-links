@@ -5,6 +5,7 @@
     onlyMd,
     getLinks,
     getLinkStatus,
+    concatenar
   } = require('./auxFunctions.js')
 
 const mdLinks = (way, options={}) => {
@@ -12,19 +13,22 @@ const mdLinks = (way, options={}) => {
     const pathVerify = pathAbs(way);
     if(pathValid(pathVerify)){
       if(onlyMd(pathVerify).length>0){
-         getLinks(pathVerify).then(((res) =>{ 
-        if(res.length>0){
-          if(options.validate === false){
-            resolve(getLinks(pathVerify))
-            // console.log(options)
-          // const valid = arrayLinks.then((val)=> getLinkStatus(val) => console.log(val))
-        }else{resolve(getLinkStatus(res)) }
-        }else{
-          reject('Any link found');
-        }   
-      }
-        ));
-        
+        getLinks(pathVerify).then(((res) =>{ 
+          // console.log(res)
+          res = concatenar(res);
+          if(res.length>0){
+            if(options.validate === false){
+              // console.log(res)
+              resolve(res)
+              // console.log(options)
+              // const valid = arrayLinks.then((val)=> getLinkStatus(val) => console.log(val))
+            }else{
+              resolve(getLinkStatus(res))
+            }
+          }else{
+            reject('Any link found' );
+          }   
+        }));  
       }else{
         reject('Markdown (.md) files not found');
       }

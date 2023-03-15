@@ -44,7 +44,7 @@ const readAllFiles = (way, arrayOfFiles = []) => {
 const onlyMd = (way) => { return readAllFiles(way).filter((file => path.extname(file) === '.md')) };
 // console.log(onlyMd('prueba.md'));
 
-//  console.log(onlyMd('direc'));
+// console.log(onlyMd('direc'));
 
 
 // const returnOnlyFilesMd = (routeFile) => {
@@ -100,40 +100,80 @@ const fileR = (way) => {
 // }
 // console.log(getLinks("direc"));
 
+// const getLinks = (way) => {
+// 	return new Promise ((resolve, reject)=> {
+// 	let arrayLinks =[];
+// 	onlyMd(way).forEach((linkmd, index, array)=>{
+// 		const regEx = /\[(.*)\]\(((?:\/|https?:\/\/).*)\)/gi;
+// 		// const arrayLinksWithText = readFile(res).match(regExp);
+// 		console.log("Index Fuera", index)
+// 		fileR(linkmd).then((response) => {
+//             // console.log(response);
+// 			// console.log(response.match(regEx));
+// 			let match;
+// 			// console.log(match)
+// 			console.log("Index dentro", index)
+// 			while((match = regEx.exec(response)) !== null) {
+// 				console.log(match)
+// 				console.log(linkmd, index)
+// 				arrayLinks.push({
+// 					href: match[2],
+//           text: match[1],
+// 					file: linkmd,
+// 				});
+// 				// match = regEx.exec(response);
+// 			}
+// 			// console.log(arrayLinks);
+// 			// console.log(arrayLinks)
+// 			if (index === (array.length -1)) {
+//         // This is the last one.
+// 				console.log(arrayLinks)
+//         resolve(arrayLinks);
+// 			}
+			
+// 		})
+// 		.catch((error) => reject('error: ',`${error}`));
+// 	});
+// });
+// };
+// getLinks('./direc').then((res)=>console.log(res)).catch((err) => console.log(err));
+
 const getLinks = (way) => {
 	return new Promise ((resolve, reject)=> {
 	let arrayLinks =[];
-	onlyMd(way).forEach((linkmd, index, array)=>{
-		const regEx = /\[(.*)\]\(((?:\/|https?:\/\/).*)\)/gi;
-		// const arrayLinksWithText = readFile(res).match(regExp);
-		fileR(linkmd).then((response) => {
+	const regEx = /\[(.*)\]\(((?:\/|https?:\/\/).*)\)/gi;
+	arrayLinks = onlyMd(way).map((linkmd) => fileR(linkmd)
+		.then((response) => {
             // console.log(response);
 			// console.log(response.match(regEx));
+			let arrayAux = [];
 			let match;
 			// console.log(match)
-
+			// console.log("Index dentro", index)
 			while((match = regEx.exec(response)) !== null) {
 				// console.log(match)
-				arrayLinks.push({
+				// console.log(linkmd, index)
+				arrayAux.push({
 					href: match[2],
           text: match[1],
 					file: linkmd,
 				});
 				// match = regEx.exec(response);
 			}
+			return arrayAux;
 			// console.log(arrayLinks);
 			// console.log(arrayLinks)
-			if (index === (array.length -1)) {
-        // This is the last one.
-        resolve(arrayLinks);
-			}
-			
-		})
-		.catch((error) => reject('error: ',`${error}`));
-	});
+			// if (index === (array.length -1)) {
+      //   // This is the last one.
+			// 	console.log(arrayLinks)
+        // resolve(arrayLinks);
+			})
+
+		.catch((error) => reject('error: ',`${error}`))
+	);
+	resolve(Promise.all(arrayLinks));
 });
 };
-// getLinks('./direc').then((res)=>console.log(res)).catch((err) => console.log(err));
 
 const getLinkStatus = (array) => {
 	let statusLink = []; 
@@ -149,7 +189,6 @@ const getLinkStatus = (array) => {
 				message: response.status >= 200 && response.status < 400 ? 'Ok' : 'Fail',
 			}
 			}).catch((error) => { 
-				console.log(error);
 				return {
 				href: link.href,
 				text: link.text,
@@ -171,6 +210,14 @@ const getLinkStatus = (array) => {
 
 // getLinks('direc').then(((res) =>(getLinkStatus(res).then(((resolve) => console.log(resolve))))));
 
+const concatenar = (arrayofarrays) => {
+	let finalArray = [];
+	arrayofarrays.forEach(array => {
+		finalArray = finalArray.concat(array);
+	});
+	return finalArray
+};
+
 
 module.exports = {
 	pathValid,
@@ -183,4 +230,5 @@ module.exports = {
 	getLinks,
 	getLinkStatus,
 	isFile,
+	concatenar
 };
