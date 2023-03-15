@@ -118,8 +118,8 @@ test('the fetch fails with an error', () => {
 });
 
 //-------Valida los links-----// getLinks
-describe('devuelve una promesa', () => {
-test('the data is format link', () => {
+describe('Devuelve una promesa con la validacion de los links', () => {
+test('Estado de los links', () => {
 	// expect.assertions(1);
 	fetch.mockImplementation(() => Promise.resolve({status:404}));
 	return getLinkStatus([{ 
