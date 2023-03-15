@@ -5,7 +5,7 @@
     onlyMd,
     getLinks,
     getLinkStatus,
-    concatenar
+    concatArr,
   } = require('./auxFunctions.js')
 
 const mdLinks = (way, options={}) => {
@@ -14,14 +14,10 @@ const mdLinks = (way, options={}) => {
     if(pathValid(pathVerify)){
       if(onlyMd(pathVerify).length>0){
         getLinks(pathVerify).then(((res) =>{ 
-          // console.log(res)
-          res = concatenar(res);
+          res = concatArr(res);
           if(res.length>0){
             if(options.validate === false){
-              // console.log(res)
               resolve(res)
-              // console.log(options)
-              // const valid = arrayLinks.then((val)=> getLinkStatus(val) => console.log(val))
             }else{
               resolve(getLinkStatus(res))
             }
@@ -45,45 +41,3 @@ const mdLinks = (way, options={}) => {
 module.exports = {
   mdLinks,
 };
-
-// if(arrayLinks.length!==0){ 
-  // const resLink= getLinkStatus(pathVerify).then((res)=> console.log(res)).catch((err)=>err)
-  //       //  console.log(resLink)
-  //     }else{
-  //       resolve(arrayLinks)}
-  //   }
-  //   }
-    // resolve();
-      // Chequear o convertir a una ruta absoluta
-      // Probar si esa ruta absoluta es un archivo o directorio 
-      // Si es un directorio Filtrar archivos md ( arreglo md)
-
-      // for (let i = 0; i < arrayLinks.length; i++) {
-      //   arrayObjects.push({
-      //     href: arrayLinks[i][2],
-      //     text: arrayLinks[i][1],
-      //     file: inputPath,
-      //   });
-      // }
-
-      // const pathVerify = pathAbs(way);
-   
-      // //Identificar si la ruta existe 
-      //  if(pathValid(pathVerify)){ 
-      //   // const ver= pathVerify;
-      //   // console.log(ver)
-      //   // console.log(pathValid(pathVerify))
-      //   //saber si es directorio o no 
-      //   // if(pathInfo(pathVerify)){
-      //   //   // console.log(pathInfo(pathVerify))
-      //   //   const readF = readAllFiles(pathVerify);
-      //     // console.log(readF);
-      //     // Saber la extension de los archivos 
-      //     // const arrayMd = fileMd(pathVerify);
-      //     // // leer un directorio 
-      //     // // readAllFiles 
-      //     // console.log(arrayMd)
-      //     // console.log(pathAbs('prueba'));
-      //     // console.log(fileMd('direc'))
-      //     // return pathVerify;
-      //     return;
